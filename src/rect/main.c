@@ -10,8 +10,8 @@ Rotary Engine Compression Tester
 //#include <stdlib.h>
 //#include <string.h>
 //#include <math.h>
-//#include <avr/interrupt.h>
-//#include <avr/pgmspace.h>
+#include <avr/interrupt.h>
+#include <avr/pgmspace.h>
 
 #include "lcd.h"
 
