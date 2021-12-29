@@ -14,19 +14,12 @@
 
 //-----------------------------------------------------------------------------
 
-
-//U8G2_ST7565_NHD_C12864_1_4W_SW_SPI u8g2(U8G2_R0, /*clock*/ 13, /*data*/ 11, /*cs*/ 10, /*dc*/ 9, /*reset*/ 8);
-
-
-
-//-----------------------------------------------------------------------------
-// stdio compatible putc
-
-int lcd_putc(char c, FILE * stream) {
-	return 0;
-}
-
-//-----------------------------------------------------------------------------
+// arduino uno
+// clock = 13 (PB5)
+// data = 11 (PB3)
+// cs = 10 (PB2)
+// dc = 9 (PB1)
+// reset = 8 (PB0)
 
 #define CS_DDR DDRB
 #define CS_PORT PORTB
@@ -40,71 +33,74 @@ int lcd_putc(char c, FILE * stream) {
 #define RESET_PORT PORTB
 #define RESET_BIT 0
 
-static u8g2_t u8g2;
+//-----------------------------------------------------------------------------
+// stdio compatible putc
 
-static uint8_t u8x8_gpio_and_delay (u8x8_t * u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
-  // Re-use library for delays
-  if (u8x8_avr_delay(u8x8, msg, arg_int, arg_ptr))
-    return 1;
-
-  switch (msg) {
-    // called once during init phase of u8g2/u8x8
-    // can be used to setup pins
-    case U8X8_MSG_GPIO_AND_DELAY_INIT:
-      CS_DDR |= _BV(CS_BIT);
-      DC_DDR |= _BV(DC_BIT);
-      RESET_DDR |= _BV(RESET_BIT);
-      break;
-    // CS (chip select) pin: Output level in arg_int
-    case U8X8_MSG_GPIO_CS:
-      if (arg_int)
-        CS_PORT |= _BV(CS_BIT);
-      else
-        CS_PORT &= ~_BV(CS_BIT);
-      break;
-    // DC (data/cmd, A0, register select) pin: Output level in arg_int
-    case U8X8_MSG_GPIO_DC:
-      if (arg_int)
-        DC_PORT |= _BV(DC_BIT);
-      else
-        DC_PORT &= ~_BV(DC_BIT);
-      break;
-    // Reset pin: Output level in arg_int
-    case U8X8_MSG_GPIO_RESET:
-      if (arg_int)
-        RESET_PORT |= _BV(RESET_BIT);
-      else
-        RESET_PORT &= ~_BV(RESET_BIT);
-      break;
-    default:
-      u8x8_SetGPIOResult(u8x8, 1);
-      break;
-  }
-  return 1;
+int lcd_putc(char c, FILE * stream) {
+	return 0;
 }
 
+//-----------------------------------------------------------------------------
+
+static u8g2_t u8g2;
+
+static uint8_t u8x8_gpio_and_delay(u8x8_t * u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
+	// Re-use library for delays
+	if (u8x8_avr_delay(u8x8, msg, arg_int, arg_ptr))
+		return 1;
+
+	switch (msg) {
+		// called once during init phase of u8g2/u8x8
+		// can be used to setup pins
+	case U8X8_MSG_GPIO_AND_DELAY_INIT:
+		CS_DDR |= _BV(CS_BIT);
+		DC_DDR |= _BV(DC_BIT);
+		RESET_DDR |= _BV(RESET_BIT);
+		break;
+		// CS (chip select) pin: Output level in arg_int
+	case U8X8_MSG_GPIO_CS:
+		if (arg_int)
+			CS_PORT |= _BV(CS_BIT);
+		else
+			CS_PORT &= ~_BV(CS_BIT);
+		break;
+		// DC (data/cmd, A0, register select) pin: Output level in arg_int
+	case U8X8_MSG_GPIO_DC:
+		if (arg_int)
+			DC_PORT |= _BV(DC_BIT);
+		else
+			DC_PORT &= ~_BV(DC_BIT);
+		break;
+		// Reset pin: Output level in arg_int
+	case U8X8_MSG_GPIO_RESET:
+		if (arg_int)
+			RESET_PORT |= _BV(RESET_BIT);
+		else
+			RESET_PORT &= ~_BV(RESET_BIT);
+		break;
+	default:
+		u8x8_SetGPIOResult(u8x8, 1);
+		break;
+	}
+	return 1;
+}
 
 int lcd_init(void) {
 
- u8g2_Setup_st7565_nhd_c12864_1(
-    &u8g2, U8G2_R0,
-    u8x8_byte_avr_hw_spi,
-    u8x8_gpio_and_delay
-  );
-  u8g2_InitDisplay(&u8g2);
-  u8g2_SetPowerSave(&u8g2, 0);
+	u8g2_Setup_st7565_nhd_c12864_1(&u8g2, U8G2_R0, u8x8_byte_avr_hw_spi, u8x8_gpio_and_delay);
+	u8g2_InitDisplay(&u8g2);
+	u8g2_SetPowerSave(&u8g2, 0);
 
-  while (1) {
-    u8g2_ClearBuffer(&u8g2);
-    u8g2_SetFont(&u8g2, u8g2_font_ncenB14_tr);
-    u8g2_DrawStr(&u8g2, 0, 15, "Hello!");
-    u8g2_SendBuffer(&u8g2);
-  }
+	//u8g2_SetContrast(&u8g2, 0);
 
+	while (1) {
+		u8g2_ClearBuffer(&u8g2);
+		u8g2_SetFont(&u8g2, u8g2_font_ncenB14_tr);
+		u8g2_DrawStr(&u8g2, 0, 15, "Hello!");
+		u8g2_SendBuffer(&u8g2);
+	}
 
- 	//u8g2.setContrast(0);	// Config the contrast to the best effect
-
-  return 0;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------

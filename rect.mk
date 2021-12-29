@@ -11,8 +11,9 @@ U8G2_AVR = $(U8G2_DIR)/sys/avr/avr-libc/lib
 CC = avr-gcc
 OBJCPY = avr-objcopy
 SIZE = avr-size
+AVRDUDE = avrdude
 
-MCU = atmega32u4
+MCU = atmega328p
 F_CPU = 16000000
 
 CFLAGS = \
@@ -44,10 +45,14 @@ SRC =	$(shell ls $(U8G2_SRC)/*.c) \
 OBJ = $(SRC:.c=.o)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@ 
+	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: all
 all: $(TARGET).hex
+
+.PHONY: program
+program: $(TARGET).hex
+	$(AVRDUDE) -p$(MCU) -cusbtiny -Pusb -Uflash:w:$(TARGET).hex:i
 
 .PHONY: clean
 clean:
@@ -60,4 +65,4 @@ $(TARGET).hex: $(TARGET).elf
 
 $(TARGET).elf: $(OBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) -o $@
-
+	$(SIZE) --mcu=$(MCU) --format=avr $(TARGET).elf

@@ -43,8 +43,9 @@ static void lcd_stdio(void) {
 //-----------------------------------------------------------------------------
 
 int main(void) {
-	lcd_stdio();
 	sei();
+
+	lcd_stdio();
 	putc('\n', stdout);
 
 #if 0
