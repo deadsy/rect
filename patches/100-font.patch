@@ -1,0 +1,22 @@
+--- ./u8g2/csrc/u8g2_font.c	2021-09-03 01:54:57.000000000 -0700
++++ ./u8g2/csrc/u8g2_font.c	2021-12-29 11:15:58.049305037 -0800
+@@ -1186,7 +1186,8 @@
+ int8_t u8g2_GetStrX(u8g2_t *u8g2, const char *s)
+ {
+   uint8_t w;
+-  int8_t ox, dx;
++  int8_t ox = 0;
++  int8_t dx;
+   u8g2_GetGlyphHorizontalProperties(u8g2, *s, &w, &ox, &dx);
+   return ox;
+ }
+--- ./u8g2/csrc/u8x8_d_s1d15721.c	2021-12-29 11:17:50.873194571 -0800
++++ ./u8g2/csrc/u8x8_d_s1d15721.c	2021-12-29 11:19:30.621087524 -0800
+@@ -70,6 +70,7 @@
+ {
+   uint8_t x, y, c;
+   uint8_t *ptr;
++  (void)y;
+   switch(msg)
+   {
+     case U8X8_MSG_DISPLAY_DRAW_TILE:
