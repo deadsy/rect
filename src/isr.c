@@ -10,6 +10,7 @@ ISR Entry Points
 #include <avr/interrupt.h>
 
 #include "uart.h"
+#include "timer.h"
 
 //-----------------------------------------------------------------------------
 // ISR Entry Points
@@ -22,12 +23,13 @@ ISR(USART_UDRE_vect) {
 	uart_tx_isr();
 }
 
+ISR(TIMER1_OVF_vect) {
+	timer_ovf_isr();
+}
+
 #if 0
 ISR(TIMER0_OVF_vect) {
 	led_isr();
-}
-ISR(TIMER1_OVF_vect) {
-	timer_ovf_isr();
 }
 #endif
 

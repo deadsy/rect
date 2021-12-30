@@ -7,26 +7,25 @@ Rotary Engine Compression Tester
 //-----------------------------------------------------------------------------
 
 #include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
-//#include <math.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 
 #include "common.h"
 #include "uart.h"
 #include "lcd.h"
-
-//-----------------------------------------------------------------------------
-
-#define RECT_VERSION 1
+#include "timer.h"
 
 //-----------------------------------------------------------------------------
 
 static void rect(void) {
-	printf_P(PSTR("RECT V%d\n"), RECT_VERSION);
+
+	timer_delay_msec(750);
+
+	float pressure[3] = { 90.12, 100.23, 85.34 };
+	lcd_results(321.3, pressure, "psi");
 
 	while (1) {
+		printf_P(PSTR("%08x\n"), timer_get_msec());
 	}
 }
 
@@ -51,10 +50,12 @@ int main(void) {
 	uart_stdio();
 	sei();
 	putc('\n', stdout);
+	printf_P(PSTR("RECT\n"));
 
 	// initialisation
 	int init_fails = 0;
 	INIT(lcd_init);
+	INIT(timer_init);
 	if (init_fails != 0) {
 		// loop forever...
 		while (1) ;

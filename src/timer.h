@@ -1,27 +1,35 @@
 //-----------------------------------------------------------------------------
 /*
 
-LCD Driver
+Timer Functions
 
 */
 //-----------------------------------------------------------------------------
 
-#ifndef LCD_H
-#define LCD_H
+#ifndef TIMER_H
+#define TIMER_H
 
 //-----------------------------------------------------------------------------
+// timer prescaler control
 
-#include <stdio.h>
+#define DIVIDE_BY_1     (1 << 0)
+#define DIVIDE_BY_8     (2 << 0)
+#define DIVIDE_BY_64    (3 << 0)
+#define DIVIDE_BY_256   (4 << 0)
+#define DIVIDE_BY_1024  (5 << 0)
 
 //-----------------------------------------------------------------------------
 // API functions
 
-int lcd_init(void);
-void lcd_start(void);
-void lcd_results(float rpm, float pressure[3], char *unit);
+void timer_ovf_isr(void);
+int timer_init(void);
+void timer_delay_msec(int n);
+void timer_delay_msec_poll(int n, void (*poll)(void));
+void timer_delay_until(uint32_t time);
+uint32_t timer_get_msec(void);
 
 //-----------------------------------------------------------------------------
 
-#endif				// LCD_H
+#endif				// TIMER_H
 
 //-----------------------------------------------------------------------------
