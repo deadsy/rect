@@ -92,12 +92,24 @@ int lcd_init(void) {
 	u8g2_SetPowerSave(&u8g2, 0);
 	u8g2_SetContrast(&u8g2, 40 << 2);
 
-	while (1) {
-		u8g2_ClearBuffer(&u8g2);
-		u8g2_SetFont(&u8g2, u8g2_font_ncenB14_tr);
-		u8g2_DrawStr(&u8g2, 0, 15, "Hello!");
-		u8g2_SendBuffer(&u8g2);
-	}
+	u8g2_ClearBuffer(&u8g2);
+	u8g2_SetFont(&u8g2, u8g2_font_ncenB14_tr);
+
+	float x0 = 90.1234;
+	float x1 = 91.2345;
+	float x2 = 92.3456;
+
+	char s[64];
+	sprintf(s, "r%d: %.2f psi", 0, x0);
+	u8g2_DrawStr(&u8g2, 0, 16, s);
+
+	sprintf(s, "r%d: %.2f psi", 1, x1);
+	u8g2_DrawStr(&u8g2, 0, 32, s);
+
+	sprintf(s, "r%d: %.2f psi", 2, x2);
+	u8g2_DrawStr(&u8g2, 0, 48, s);
+
+	u8g2_SendBuffer(&u8g2);
 
 	return 0;
 }

@@ -35,6 +35,8 @@ CFLAGS = \
 	-DMOSI_BIT=3
 
 LDFLAGS = \
+	-Wl,-u,vfprintf -lprintf_flt \
+	-Wl,-lm \
 	-Wl,--gc-sections \
 	-mmcu=$(MCU)
 

@@ -19,10 +19,12 @@ Rotary Engine Compression Tester
 
 //-----------------------------------------------------------------------------
 
-static void rect(void) {
+#define RECT_VERSION 1
 
-	printf_P(PSTR("RECT\n"));
-	printf_P(PSTR("Version 1.0\n"));
+//-----------------------------------------------------------------------------
+
+static void rect(void) {
+	printf_P(PSTR("RECT V%d\n"), RECT_VERSION);
 
 	while (1) {
 	}
@@ -49,8 +51,6 @@ int main(void) {
 	uart_stdio();
 	sei();
 	putc('\n', stdout);
-
-	printf_P(PSTR("hello world!\n"));
 
 	// initialisation
 	int init_fails = 0;
