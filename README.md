@@ -18,8 +18,8 @@ Soft floating point is ok, this is not a demanding application.
 
 Here is what I had in my parts bin:
 
-Arduino Leonardo
-https://docs.arduino.cc/hardware/leonardo/
+Arduino Uno (Rev 3)
+https://docs.arduino.cc/hardware/uno-rev3
 
 DF Robot LCD12864 Arduino Shield
 https://www.dfrobot.com/product-1084.html

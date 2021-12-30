@@ -23,6 +23,10 @@ PATCH_CMD = \
 all: .stamp_src
 	make -f rect.mk $@
 
+.PHONY: program
+program:
+	make -f rect.mk $@
+
 .PHONY: clean
 clean:
 	make -f rect.mk $@

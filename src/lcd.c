@@ -87,11 +87,10 @@ static uint8_t u8x8_gpio_and_delay(u8x8_t * u8x8, uint8_t msg, uint8_t arg_int, 
 
 int lcd_init(void) {
 
-	u8g2_Setup_st7565_nhd_c12864_1(&u8g2, U8G2_R0, u8x8_byte_avr_hw_spi, u8x8_gpio_and_delay);
+	u8g2_Setup_st7565_nhd_c12864_f(&u8g2, U8G2_R2, u8x8_byte_avr_hw_spi, u8x8_gpio_and_delay);
 	u8g2_InitDisplay(&u8g2);
 	u8g2_SetPowerSave(&u8g2, 0);
-
-	//u8g2_SetContrast(&u8g2, 0);
+	u8g2_SetContrast(&u8g2, 40 << 2);
 
 	while (1) {
 		u8g2_ClearBuffer(&u8g2);
