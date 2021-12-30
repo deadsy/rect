@@ -1,2 +1,6 @@
+*.elf
+*.hex
+.stamp_*
 dl
-src/u8g2
+u8g2
+src/*.o

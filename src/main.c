@@ -13,6 +13,8 @@ Rotary Engine Compression Tester
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 
+#include "common.h"
+#include "uart.h"
 #include "lcd.h"
 
 //-----------------------------------------------------------------------------
@@ -27,40 +29,36 @@ static void rect(void) {
 }
 
 //-----------------------------------------------------------------------------
-// Use LCD for stdio
+// Use UART for stdio
 
-static FILE lcd_stream;
+static FILE uart_stream;
 
-static void lcd_stdio(void) {
-	lcd_init();
-	lcd_stream.put = lcd_putc;
-	lcd_stream.get = 0;
-	lcd_stream.flags = _FDEV_SETUP_RW;
-	lcd_stream.udata = 0;
-	stdout = stdin = stderr = &lcd_stream;
+static void uart_stdio(void) {
+	uart_init();
+	uart_stream.put = uart_putc;
+	uart_stream.get = uart_getc;
+	uart_stream.flags = _FDEV_SETUP_RW;
+	uart_stream.udata = 0;
+	stdout = stdin = stderr = &uart_stream;
 }
 
 //-----------------------------------------------------------------------------
 
 int main(void) {
-	sei();
 
-	lcd_stdio();
+	uart_stdio();
+	sei();
 	putc('\n', stdout);
 
-#if 0
+	printf_P(PSTR("hello world!\n"));
+
 	// initialisation
 	int init_fails = 0;
-	INIT(uart_init);
-	INIT(timer_init);
-	INIT(led_init);
-	INIT(midi_init);
-	INIT(key_init);
+	INIT(lcd_init);
 	if (init_fails != 0) {
 		// loop forever...
 		while (1) ;
 	}
-#endif
 
 	rect();
 
