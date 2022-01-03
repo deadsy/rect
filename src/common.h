@@ -26,16 +26,6 @@ Common Definitions
 #define inc_mod(a, b) ((a + 1) & b)
 
 //-----------------------------------------------------------------------------
-// bit operations on ports
-
-// set bit
-#define sbi(port, bit) ((port) |= (1 << (bit)))
-// clear bit
-#define cbi(port, bit) ((port) &= ~(1 << (bit)))
-// read bit
-#define rbi(port, bit) (((port) & (1 << (bit))) != 0)
-
-//-----------------------------------------------------------------------------
 
 #define min(a, b) ((a < b) ? (a) : (b))
 #define max(a, b) ((a > b) ? (a) : (b))
