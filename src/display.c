@@ -1,7 +1,8 @@
 //-----------------------------------------------------------------------------
 /*
 
-LCD Display Routines
+DFR0287 Routines
+https://www.dfrobot.com/product-1084.html
 
 */
 //-----------------------------------------------------------------------------
@@ -11,11 +12,34 @@ LCD Display Routines
 #include <u8x8_avr.h>
 #include <avr/power.h>
 
-#include "lcd.h"
+#include "display.h"
+#include "adc.h"
 
 //-----------------------------------------------------------------------------
 
 static u8g2_t u8g2;
+
+//-----------------------------------------------------------------------------
+
+char get_joystick(void) {
+	uint16_t val = adc_poll(0);
+	if (val >= 0x188 && val <= 0x1a8) {
+		return 's';	// south
+	}
+	if (val >= 0x328 && val <= 0x348) {
+		return 'n';	// north
+	}
+	if (val >= 0 && val <= 0x10) {
+		return 'w';	// west
+	}
+	if (val >= 0x260 && val <= 0x280) {
+		return 'e';	// east
+	}
+	if (val >= 0xbc && val <= 0xdc) {
+		return 'd';	// down
+	}
+	return '0';		// null
+}
 
 //-----------------------------------------------------------------------------
 

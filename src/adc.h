@@ -24,6 +24,7 @@ void adc_isr(void);
 void adc_start(uint8_t pin);
 void adc_stop(void);
 int adc_read(ADC_SAMPLE * sample, int timeout);
+uint32_t adc_get_count(void);
 
 // polled
 uint16_t adc_poll(uint8_t pin);

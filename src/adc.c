@@ -7,6 +7,7 @@ Analog To Digital Driver
 //-----------------------------------------------------------------------------
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #include "common.h"
 #include "adc.h"
@@ -18,12 +19,18 @@ Analog To Digital Driver
 
 //-----------------------------------------------------------------------------
 
+static uint32_t adc_samples;
+
 // adc conversion complete
 void adc_isr(void) {
+	uint16_t val = ADC;
+	(void)val;
+	adc_samples++;
 }
 
 // start free-running adc
 void adc_start(uint8_t pin) {
+	adc_samples = 0;
 	// set the source
 	ADMUX = _BV(REFS0) | ((pin & 15) << MUX0);
 	// ADC enable, prescalar, auto-triggering, interrupt enabled, start the conversion
@@ -39,6 +46,13 @@ void adc_stop(void) {
 // read a sample from the sample buffer
 int adc_read(ADC_SAMPLE * sample, int timeout) {
 	return 0;
+}
+
+uint32_t adc_get_count(void) {
+	cli();
+	uint32_t n = adc_samples;
+	sei();
+	return n;
 }
 
 //-----------------------------------------------------------------------------

@@ -12,42 +12,13 @@ Rotary Engine Compression Tester
 
 #include "common.h"
 #include "uart.h"
-#include "lcd.h"
+#include "display.h"
 #include "timer.h"
 #include "adc.h"
 
 //-----------------------------------------------------------------------------
 
-enum {
-	BUTTON_NULL,
-	BUTTON_NORTH,
-	BUTTON_SOUTH,
-	BUTTON_WEST,
-	BUTTON_EAST,
-	BUTTON_PRESS,
-};
-
-int get_button(void) {
-	uint16_t val = adc_poll(0);
-	if (val >= 0x188 && val <= 0x1a8) {
-		return BUTTON_SOUTH;
-	}
-	if (val >= 0x328 && val <= 0x348) {
-		return BUTTON_NORTH;
-	}
-	if (val >= 0 && val <= 0x10) {
-		return BUTTON_WEST;
-	}
-	if (val >= 0x260 && val <= 0x280) {
-		return BUTTON_EAST;
-	}
-	if (val >= 0xbc && val <= 0xdc) {
-		return BUTTON_PRESS;
-	}
-	return BUTTON_NULL;
-}
-
-//-----------------------------------------------------------------------------
+#if 0
 
 static void rect(void) {
 
@@ -64,6 +35,19 @@ static void rect(void) {
 			printf_P(PSTR("%d\n"), state);
 		}
 	}
+}
+
+#endif
+
+static void rect(void) {
+
+	adc_start(0);
+
+	while (1) {
+		printf("%08lx %08lx\n", timer_get_msec(), adc_get_count());
+		timer_delay_msec(500);
+	}
+
 }
 
 //-----------------------------------------------------------------------------
