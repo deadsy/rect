@@ -8,12 +8,9 @@ https://www.dfrobot.com/product-1084.html
 //-----------------------------------------------------------------------------
 
 #include <u8g2.h>
-#include <util/delay.h>
 #include <u8x8_avr.h>
-#include <avr/power.h>
 
 #include "display.h"
-#include "adc.h"
 
 //-----------------------------------------------------------------------------
 
@@ -21,8 +18,7 @@ static u8g2_t u8g2;
 
 //-----------------------------------------------------------------------------
 
-char get_joystick(void) {
-	uint16_t val = adc_poll(0);
+char get_joystick(uint16_t val) {
 	if (val >= 0x188 && val <= 0x1a8) {
 		return 's';	// south
 	}

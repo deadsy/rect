@@ -19,18 +19,41 @@ Analog To Digital Driver
 
 //-----------------------------------------------------------------------------
 
-static uint32_t adc_samples;
+// ADC Buffer Size (must be a power of 2 and < 256)
+#define ADC_BUFSIZE 8
+
+static struct {
+	uint32_t n;		// sample counter
+	uint8_t rd;		// read index into buffer
+	volatile uint8_t wr;	// write index into buffer
+	ADC_SAMPLE buf[ADC_BUFSIZE];	// samples buffer
+} adc;
+
+//-----------------------------------------------------------------------------
 
 // adc conversion complete
 void adc_isr(void) {
 	uint16_t val = ADC;
-	(void)val;
-	adc_samples++;
+	adc.n++;
+
+	if ((adc.n & ((1 << 12) - 1)) != 0) {
+		return;
+	}
+
+	uint8_t wr_next = (adc.wr + 1) & (ADC_BUFSIZE - 1);
+	if (wr_next != adc.rd) {
+		adc.buf[adc.wr].val = val;
+		adc.buf[adc.wr].n = adc.n;
+		adc.wr = wr_next;
+	}
 }
 
 // start free-running adc
 void adc_start(uint8_t pin) {
-	adc_samples = 0;
+	// make sure we have stopped
+	ADCSRA = 0;
+	// reset the adc buffering
+	adc.n = adc.rd = adc.wr = 0;
 	// set the source
 	ADMUX = _BV(REFS0) | ((pin & 15) << MUX0);
 	// ADC enable, prescalar, auto-triggering, interrupt enabled, start the conversion
@@ -45,14 +68,14 @@ void adc_stop(void) {
 
 // read a sample from the sample buffer
 int adc_read(ADC_SAMPLE * sample, int timeout) {
-	return 0;
-}
-
-uint32_t adc_get_count(void) {
+	// Wait for a sample in the buffer.
+	while (adc.rd == adc.wr) ;
 	cli();
-	uint32_t n = adc_samples;
+	sample->val = adc.buf[adc.rd].val;
+	sample->n = adc.buf[adc.rd].n;
+	adc.rd = (adc.rd + 1) & (ADC_BUFSIZE - 1);
 	sei();
-	return n;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------

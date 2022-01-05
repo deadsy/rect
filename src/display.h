@@ -1,13 +1,14 @@
 //-----------------------------------------------------------------------------
 /*
 
-LCD Driver
+DFR0287 Routines
+https://www.dfrobot.com/product-1084.html
 
 */
 //-----------------------------------------------------------------------------
 
-#ifndef LCD_H
-#define LCD_H
+#ifndef DISPLAY_H
+#define DISPLAY_H
 
 //-----------------------------------------------------------------------------
 
@@ -19,9 +20,10 @@ LCD Driver
 int lcd_init(void);
 void lcd_start(void);
 void lcd_results(float rpm, float pressure[3], char *unit);
+char get_joystick(uint16_t val);
 
 //-----------------------------------------------------------------------------
 
-#endif				// LCD_H
+#endif				// DISPLAY_H
 
 //-----------------------------------------------------------------------------

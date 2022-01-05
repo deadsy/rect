@@ -40,14 +40,12 @@ static void rect(void) {
 #endif
 
 static void rect(void) {
-
 	adc_start(0);
-
 	while (1) {
-		printf("%08lx %08lx\n", timer_get_msec(), adc_get_count());
-		timer_delay_msec(500);
+		ADC_SAMPLE s;
+		adc_read(&s, 0);
+		printf("%08lx %04x %c\n", s.n, s.val, get_joystick(s.val));
 	}
-
 }
 
 //-----------------------------------------------------------------------------
