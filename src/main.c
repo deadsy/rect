@@ -69,7 +69,9 @@ int main(void) {
 	uart_stdio();
 	sei();
 	putc('\n', stdout);
-	printf_P(PSTR("RECT\n"));
+
+	printf_P(PSTR("sample rate %e\n"), ADC_SAMPLE_RATE);
+	printf_P(PSTR("sample time %e\n"), ADC_SAMPLE_TIME);
 
 	// initialisation
 	int init_fails = 0;

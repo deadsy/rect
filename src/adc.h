@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 /*
 
-Analog To Digital Driver
+Analog To Digital Converter Driver
 
 */
 //-----------------------------------------------------------------------------
@@ -13,8 +13,12 @@ Analog To Digital Driver
 
 typedef struct {
 	uint32_t n;		// sample number
-	uint16_t val;		// sample value
+	int16_t val;		// sample value
 } ADC_SAMPLE;
+
+// adc_sample_rate = cpu_clock / (adc_clocks_per_sample * prescalar)
+#define ADC_SAMPLE_RATE  (16000000.f / (13.f * 128.f))
+#define ADC_SAMPLE_TIME  (1.f / ADC_SAMPLE_RATE)
 
 //-----------------------------------------------------------------------------
 // api
@@ -26,7 +30,7 @@ void adc_stop(void);
 int adc_read(ADC_SAMPLE * sample, int timeout);
 
 // polled
-uint16_t adc_poll(uint8_t pin);
+int16_t adc_poll(uint8_t pin);
 
 int adc_init(void);
 

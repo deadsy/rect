@@ -20,7 +20,7 @@ https://www.dfrobot.com/product-1084.html
 int lcd_init(void);
 void lcd_start(void);
 void lcd_results(float rpm, float pressure[3], char *unit);
-char get_joystick(uint16_t val);
+char get_joystick(int16_t val);
 
 //-----------------------------------------------------------------------------
 

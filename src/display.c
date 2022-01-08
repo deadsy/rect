@@ -18,7 +18,7 @@ static u8g2_t u8g2;
 
 //-----------------------------------------------------------------------------
 
-char get_joystick(uint16_t val) {
+char get_joystick(int16_t val) {
 	if (val >= 0x188 && val <= 0x1a8) {
 		return 's';	// south
 	}
