@@ -9,12 +9,74 @@ Rotary Engine Compression Tester
 #include <stdio.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
+#include <string.h>
+#include <math.h>
 
 #include "common.h"
 #include "uart.h"
 #include "display.h"
 #include "timer.h"
 #include "adc.h"
+
+//-----------------------------------------------------------------------------
+
+#define NUM_ROTOR_SAMPLES 16
+#define NUM_ROTOR 3
+
+struct rotor_stats {
+	int32_t prev_t;		// previous time sample
+	int32_t sum_p;		// sum of pressure
+	int32_t sum_p2;		// sum of pressure * pressure
+	int32_t sum_t;		// sum of time
+	int32_t sum_t2;		// sum of time * time
+};
+
+static struct rotor_stats rotor[NUM_ROTOR];
+
+// reset all rotor samples
+static void rotor_reset(void) {
+	memset(rotor, 0, sizeof(rotor));
+}
+
+// add a sample for a rotor
+static void rotor_add_sample(int n, ADC_SAMPLE * s) {
+	struct rotor_stats *r = &rotor[n];
+	int32_t p = s->val;
+	int32_t t = (r->prev_t == 0) ? 0 : (s->n - r->prev_t);
+	r->prev_t = s->n;
+	r->sum_p += p;
+	r->sum_p2 += p * p;
+	r->sum_t += t;
+	r->sum_t2 += t * t;
+}
+
+// average pressure for a rotor
+static float rotor_p_ave(int n) {
+	struct rotor_stats *r = &rotor[n];
+	return (float)r->sum_p / (float)NUM_ROTOR_SAMPLES;
+}
+
+// standard deviation of rotor pressure samples
+static float rotor_p_sd(int n) {
+	struct rotor_stats *r = &rotor[n];
+	float ave = rotor_p_ave(n);
+	float sd2 = ((float)r->sum_p2 / (float)NUM_ROTOR_SAMPLES) - (ave * ave);
+	return sqrtf(sd2);
+}
+
+// average time delta for rotor samples
+static float rotor_t_ave(int n) {
+	struct rotor_stats *r = &rotor[n];
+	return (float)r->sum_t / (float)NUM_ROTOR_SAMPLES;
+}
+
+// standard deviation of time delta for rotor samples
+static float rotor_t_sd(int n) {
+	struct rotor_stats *r = &rotor[n];
+	float ave = rotor_t_ave(n);
+	float sd2 = ((float)r->sum_t2 / (float)NUM_ROTOR_SAMPLES) - (ave * ave);
+	return sqrtf(sd2);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -40,12 +102,35 @@ static void rect(void) {
 #endif
 
 static void rect(void) {
+	rotor_reset();
 	adc_start(0);
+
+	for (int i = 0; i < NUM_ROTOR_SAMPLES; i++) {
+		for (int j = 0; j < NUM_ROTOR; j++) {
+			ADC_SAMPLE s;
+			adc_read(&s, 0);
+			rotor_add_sample(j, &s);
+		}
+	}
+
+	for (int j = 0; j < NUM_ROTOR; j++) {
+		float p_ave = rotor_p_ave(j);
+		float p_sd = rotor_p_sd(j);
+		float t_ave = rotor_t_ave(j);
+		float t_sd = rotor_t_sd(j);
+		printf("r%d: p %f(%f) t %f(%f)\n", j, p_ave, p_sd, t_ave, t_sd);
+	}
+
+#if 0
+
 	while (1) {
 		ADC_SAMPLE s;
 		adc_read(&s, 0);
 		printf("%08lx %04x %c\n", s.n, s.val, get_joystick(s.val));
 	}
+
+#endif
+
 }
 
 //-----------------------------------------------------------------------------
